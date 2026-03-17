@@ -1,28 +1,31 @@
 name: Python CI
 
-on: [push]
+on:
+  push:
+  pull_request:
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"] # Define the Python versions to test
-    
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
     steps:
-      - uses: actions/checkout@v4
-      
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5 # Use v5 for broader support
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }} # Use the matrix variable
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pytest
-          # If you have a requirements.txt file, install it here
-          # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run tests
         run: pytest
